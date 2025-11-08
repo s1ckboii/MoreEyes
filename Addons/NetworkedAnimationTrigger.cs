@@ -1,73 +1,103 @@
-﻿using MoreEyes.Components;
+﻿/*
+using MoreEyes.Components;
 using Photon.Pun;
 using UnityEngine;
 using static MoreEyes.Utility.Enums;
 
-namespace MoreEyes.Addons
+namespace MoreEyes.Addons;
+
+[DisallowMultipleComponent]
+[RequireComponent(typeof(Animator))]
+public class NetworkedAnimationTrigger : MonoBehaviour
 {
-    [DisallowMultipleComponent]
-    [RequireComponent(typeof(Animator))]
-    public class NetworkedAnimationTrigger : MonoBehaviour
+    [Header("Key Binding")]
+    public NumpadKey triggerKey = NumpadKey.Keypad5;
+
+    [Header("Animator Parameter")]
+    public string paramName = "MyBool";
+
+    public enum ParamType { Bool, Trigger, Float, Int }
+    public ParamType paramType = ParamType.Bool;
+
+    public float floatValue = 0f;
+    public int intValue = 0;
+
+    private Animator animator;
+
+    private void Awake()
     {
-        [Header("Key Binding")]
-        [Tooltip("Choose a Numpad key to trigger this animation.")]
-        public NumpadKey triggerKey = NumpadKey.Keypad5;
+        animator = GetComponent<Animator>();
+    }
 
-        [Header("Animator Parameter")]
-        [Tooltip("Name of the Animator parameter to modify.")]
-        public string paramName = "MyBool";
+    private void Update()
+    {
+        PatchedEyes localEyes = PatchedEyes.Local?.CurrentSelections?.patchedEyes;
+        if (localEyes == null || localEyes.gameObject != GetComponentInParent<PatchedEyes>()?.gameObject)
+            return;
 
-        public enum ParamType { Bool, Trigger, Float, Int }
-        public ParamType paramType = ParamType.Bool;
-
-        [Tooltip("Value to set if Float parameter type is selected.")]
-        public float floatValue = 0f;
-
-        [Tooltip("Value to set if Int parameter type is selected.")]
-        public int intValue = 0;
-
-        private Animator animator;
-
-        private void Awake()
+        if (Input.GetKeyDown((KeyCode)triggerKey))
         {
-            animator = GetComponent<Animator>();
+            TriggerLocal();
+
+            if (PhotonNetwork.IsConnected && MoreEyesNetwork.instance != null)
+                TriggerAndSync();
         }
+    }
 
-        private void Update()
+    private void TriggerLocal()
+    {
+        ApplyToAnimator(paramType, paramName, floatValue, intValue, null);
+    }
+
+    private void TriggerAndSync()
+    {
+        string playerID = PatchedEyes.Local.CurrentSelections.playerID;
+
+        switch (paramType)
         {
-            if (Input.GetKeyDown((KeyCode)triggerKey))
-            {
-                TriggerAnimation();
-            }
+            case ParamType.Bool:
+                bool newBool = animator.GetBool(paramName);
+                MoreEyesNetwork.instance.photonView.RPC(nameof(MoreEyesNetwork.RPC_SetEyeAnimBool), RpcTarget.Others, playerID, paramName, newBool);
+                break;
+
+            case ParamType.Trigger:
+                MoreEyesNetwork.instance.photonView.RPC(nameof(MoreEyesNetwork.RPC_SetEyeAnimTrigger), RpcTarget.Others, playerID, paramName);
+                break;
+
+            case ParamType.Float:
+                MoreEyesNetwork.instance.photonView.RPC(
+                    nameof(MoreEyesNetwork.RPC_SetEyeAnimFloat), RpcTarget.Others, playerID, paramName, floatValue);
+                break;
+
+            case ParamType.Int:
+                MoreEyesNetwork.instance.photonView.RPC(nameof(MoreEyesNetwork.RPC_SetEyeAnimInt), RpcTarget.Others, playerID, paramName, intValue);
+                break;
         }
+    }
 
-        private void TriggerAnimation()
+    private void ApplyToAnimator(ParamType type, string name, float f, int i, bool? b)
+    {
+        if (animator == null || string.IsNullOrEmpty(name)) return;
+
+        switch (type)
         {
-            if (animator == null || string.IsNullOrEmpty(paramName)) return;
+            case ParamType.Bool:
+                bool newBool = b ?? !animator.GetBool(name);
+                animator.SetBool(name, newBool);
+                break;
 
-            switch (paramType)
-            {
-                case ParamType.Bool:
-                    bool current = animator.GetBool(paramName);
-                    animator.SetBool(paramName, !current);
-                    MoreEyesNetwork.SendNetwork(paramType, paramName, !current);
-                    break;
+            case ParamType.Trigger:
+                animator.SetTrigger(name);
+                break;
 
-                case ParamType.Trigger:
-                    animator.SetTrigger(paramName);
-                    MoreEyesNetwork.SendNetwork(paramType, paramName);
-                    break;
+            case ParamType.Float:
+                animator.SetFloat(name, f);
+                break;
 
-                case ParamType.Float:
-                    animator.SetFloat(paramName, floatValue);
-                    MoreEyesNetwork.SendNetwork(paramType, paramName, floatValue);
-                    break;
-
-                case ParamType.Int:
-                    animator.SetInteger(paramName, intValue);
-                    MoreEyesNetwork.SendNetwork(paramType, paramName, intValue);
-                    break;
-            }
+            case ParamType.Int:
+                animator.SetInteger(name, i);
+                break;
         }
     }
 }
+*/

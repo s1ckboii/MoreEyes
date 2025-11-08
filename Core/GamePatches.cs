@@ -24,7 +24,7 @@ internal class LocalPlayerMenuPatch
 {
     public static void Postfix(PlayerAvatarVisuals __instance)
     {
-        if (PlayerAvatar.instance == null || SemiFunc.SplashScreenLevel())
+        if (PlayerAvatar.instance == null || SemiFunc.IsSplashScreen())
             return;
 
         if (__instance.isMenuAvatar)

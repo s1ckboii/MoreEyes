@@ -1,6 +1,5 @@
 ﻿using MenuLib;
 using MenuLib.MonoBehaviors;
-using MoreEyes.Addons;
 using MoreEyes.Collections;
 using MoreEyes.Components;
 using MoreEyes.Core;
@@ -49,7 +48,7 @@ internal sealed class EyeSelectionMenu
     internal static int modCount = 0;
     internal static Vector2 buttonPosMain;
     internal static Vector2 buttonPosLobby = new(600f, 22f);
-    internal static Vector2 buttonPosEsc = new(600f, 22f);
+    internal static Vector2 buttonPosEsc = new(470f, 0f);
 
     internal static readonly Vector2 anchorOut = new(471.25f, 24.5f);
     internal static readonly Vector2 anchorIn = new(471.25f, 156.5f);

@@ -1,11 +1,9 @@
-﻿using MoreEyes.Addons;
-using MoreEyes.Collections;
+﻿using MoreEyes.Collections;
 using MoreEyes.Core;
 using MoreEyes.Managers;
 using Photon.Pun;
 using System.Linq;
 using UnityEngine;
-using static MoreEyes.Addons.NetworkedAnimationTrigger;
 
 namespace MoreEyes.Components;
 internal class MoreEyesNetwork : MonoBehaviour
@@ -103,16 +101,6 @@ internal class MoreEyesNetwork : MonoBehaviour
         return new(color.r, color.g, color.b);
     }
 
-    internal static void SendNetwork(ParamType type, string name, object value = null)
-    {
-        if (SemiFunc.RunIsLevel() && instance != null && instance.photonView != null)
-        {
-            string playerID = PhotonNetwork.LocalPlayer.UserId;
-            Loggers.Debug($"[Network] Sending RPC_SyncAnimatorParam to others: playerID={playerID}, param={name}, type={type}, value={value}");
-            instance.photonView.RPC("RPC_SyncAnimatorParam", RpcTarget.Others, playerID, name, (int)type, value);
-        }
-    }
-
     [PunRPC]
     internal void SetSingleSelection(string playerID, bool isLeft, bool isPupil, string uniqueID)
     {
@@ -182,34 +170,46 @@ internal class MoreEyesNetwork : MonoBehaviour
         playerSelections.PlayerEyesSpawn();
         FileManager.WriteTextFile();
     }
+
+    /*
     [PunRPC]
-    internal void RPC_SyncAnimatorParam(string playerID, string paramName, int paramTypeInt, object value)
+    internal void RPC_SetEyeAnimBool(string playerID, string paramName, bool value)
     {
-        Loggers.Debug($"[RPC] RPC_SyncAnimatorParam received for playerID={playerID}, param={paramName}, type={paramTypeInt}, value={value}");
+        var eyes = CustomEyeManager.AllPatchedEyes.FirstOrDefault(p => p.playerID == playerID);
+        if (eyes == null) return;
 
-        var playerSelections = PlayerEyeSelection.GetPlayerEyeSelection(playerID);
-        if (playerSelections == null) return;
-
-        Animator animator = playerSelections.patchedEyes.GetComponent<Animator>();
-        if (animator == null) return;
-
-        var type = (ParamType)paramTypeInt;
-
-        switch (type)
-        {
-            case ParamType.Bool:
-                animator.SetBool(paramName, (bool)value);
-                Loggers.Debug($"[RPC] Animator.SetBool({paramName}, {value})");
-                break;
-            case ParamType.Trigger:
-                animator.SetTrigger(paramName);
-                break;
-            case ParamType.Float:
-                animator.SetFloat(paramName, (float)value);
-                break;
-            case ParamType.Int:
-                animator.SetInteger(paramName, (int)value);
-                break;
-        }
+        var anim = eyes.GetComponent<Animator>();
+        anim?.SetBool(paramName, value);
     }
+
+    [PunRPC]
+    internal void RPC_SetEyeAnimTrigger(string playerID, string paramName)
+    {
+        var eyes = CustomEyeManager.AllPatchedEyes.FirstOrDefault(p => p.playerID == playerID);
+        if (eyes == null) return;
+
+        var anim = eyes.GetComponent<Animator>();
+        anim?.SetTrigger(paramName);
+    }
+
+    [PunRPC]
+    internal void RPC_SetEyeAnimFloat(string playerID, string paramName, float value)
+    {
+        var eyes = CustomEyeManager.AllPatchedEyes.FirstOrDefault(p => p.playerID == playerID);
+        if (eyes == null) return;
+
+        var anim = eyes.GetComponent<Animator>();
+        anim?.SetFloat(paramName, value);
+    }
+
+    [PunRPC]
+    internal void RPC_SetEyeAnimInt(string playerID, string paramName, int value)
+    {
+        var eyes = CustomEyeManager.AllPatchedEyes.FirstOrDefault(p => p.playerID == playerID);
+        if (eyes == null) return;
+
+        var anim = eyes.GetComponent<Animator>();
+        anim?.SetInteger(paramName, value);
+    }
+    */
 }
