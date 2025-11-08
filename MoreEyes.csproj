@@ -55,7 +55,7 @@
   
   <PropertyGroup>
     <Product>MoreEyes</Product>
-    <Version>1.0.1-beta</Version>
+    <Version>1.0.1</Version>
     <Authors>s1ckboy &amp; darmuh</Authors>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
