@@ -55,7 +55,7 @@
   
   <PropertyGroup>
     <Product>MoreEyes</Product>
-    <Version>1.0.1</Version>
+    <Version>1.0.1-beta</Version>
     <Authors>s1ckboy &amp; darmuh</Authors>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
@@ -64,6 +64,11 @@
     <RepositoryType>git</RepositoryType>
     <Description>API for R.E.P.O eye customization</Description>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <None Include="LICENSE.txt" Pack="true" PackagePath="" />
+    <None Include="README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
   
   <!-- Default values in case the .csproj.user file doesn't exist -->
   <PropertyGroup>
